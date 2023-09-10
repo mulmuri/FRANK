@@ -1,0 +1,17 @@
+{
+  "name": "franks",
+  "version": "1.0.0",
+  "description": "A Fest RANK Server impl. by nodejs",
+  "main": "./dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  }
+}
