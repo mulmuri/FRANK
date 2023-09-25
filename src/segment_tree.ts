@@ -4,7 +4,7 @@ import TreeNode from "./node";
 
 type Merge<T> = (...numbers: T[]) => T;
 
-class SegmentTree<T> {
+class SegmentTree<T extends number> {
 
     merge: Merge<T>;
     default: T;
