@@ -1,7 +1,7 @@
 import {describe, expect, test} from '@jest/globals';
 
-import TreeNode from '../src/node';
-import SegmentTree from '../src/segment_tree'
+import TreeNode from '../src/datastructure/node';
+import SegmentTree from '../src/datastructure/segment_tree'
 
 
 describe('SegmentTree as Max', () => {
