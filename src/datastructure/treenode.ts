@@ -1,14 +1,12 @@
-class TreeNode<T> {
-    l: TreeNode<T> | null = null;
-    r: TreeNode<T> | null = null;
+class TreeNode {
+    l: TreeNode | null = null;
+    r: TreeNode | null = null;
 
-    i: number;
-    v: T;
+    v: number;
 
-    constructor(index: number, value: T) {
-        this.i = index;
+    constructor(value: number) {
         this.v = value;
     }
 }
 
-export default TreeNode
+export default TreeNode;
