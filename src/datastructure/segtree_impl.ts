@@ -1,20 +1,20 @@
 import SegTree from "./segtree_method";
 
 
-class SumSegTree extends SegTree {
+export class SumSegTree extends SegTree {
     constructor(left: number, right: number) {
-        super(left, right, (a, b) => a + b);
+        super(left, right, (...numbers: number[]) => numbers.reduce((a, b) => a + b, 0));
     }
 }
 
-class MaxSegTree extends SegTree {
+export class MaxSegTree extends SegTree {
     constructor(left: number, right: number) {
-        super(left, right, (a, b) => Math.max(a, b));
+        super(left, right, (...numbers: number[]) => Math.max(...numbers));
     }
 }
 
-class MinSegTree extends SegTree {
+export class MinSegTree extends SegTree {
     constructor(left: number, right: number) {
-        super(left, right, (a, b) => Math.min(a, b));
+        super(left, right, (...numbers: number[]) => Math.min(...numbers));
     }
 }
