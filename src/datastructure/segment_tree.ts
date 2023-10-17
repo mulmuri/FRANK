@@ -1,20 +1,20 @@
-import TreeNode from "./node";
+import TreeNode from "./treenode";
 
 
 
-type Merge<T> = (...numbers: T[]) => T;
+type Merge = (...numbers: number[]) => number;
 
-class SegmentTree<T extends number> {
+class SegmentTree {
 
-    merge: Merge<T>;
-    default: T;
+    merge: Merge;
+    default: number;
 
-    constructor(merge: Merge<T>) {
+    constructor(merge: Merge) {
         this.merge = merge;
         this.default = merge();
     }
 
-    update(node: TreeNode<T>, l: number, r: number, x: number, v: T) {
+    update(node: TreeNode, l: number, r: number, x: number, v: number) {
         if (l === r) {
             node.v = v;
             return;
@@ -24,12 +24,12 @@ class SegmentTree<T extends number> {
 
         if (x <= m) {
             if (!node.l) {
-                node.l = new TreeNode<T>(this.default);
+                node.l = new TreeNode(this.default);
             }
             this.update(node.l, l, m, x, v);
         } else {
             if (!node.r) {
-                node.r = new TreeNode<T>(this.default);
+                node.r = new TreeNode(this.default);
             }
             this.update(node.r, m + 1, r, x, v);
         }
@@ -40,7 +40,7 @@ class SegmentTree<T extends number> {
         node.v = this.merge(t1, t2);
     }
 
-    query(node: TreeNode<T>, s: number, e: number, l: number, r: number): T {
+    query(node: TreeNode, s: number, e: number, l: number, r: number): number {
         if (r < s || e < l) {
             return this.default;
         }
