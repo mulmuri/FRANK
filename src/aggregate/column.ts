@@ -6,6 +6,8 @@ import { IRankAggs } from "./interface";
 
 
 
+const migrationThreshold = 32;
+
 class ColumnAggs {
     rankSet: IRankAggs;
     coll: Map<number, ColumnAggs | null>
@@ -13,6 +15,7 @@ class ColumnAggs {
     order: Order;
     lRange: number;
     rRange: number;
+    migrated: boolean = false;
 
     private initializeRankSet(order: Order): IRankAggs {
         return match<Order, IRankAggs>(order)
@@ -31,7 +34,6 @@ class ColumnAggs {
     }
 
     constructor(order: Order, lRange: number, rRange: number) {
-
         this.rankSet = this.initializeRankSet(order);
         this.coll = new Map();
         this.order = order;
@@ -40,15 +42,20 @@ class ColumnAggs {
     }
 
     exists(index: number): boolean {
-        return this.rankSet.exists(index);
+        return this.coll.has(index);
     }
 
     insert(index: number, colset: ColumnAggs): void {
+        if (this.coll.has(index)) {
+            throw new Error("Cannot insert a duplicate value");
+        }
+        this.coll.set(index, colset);
         this.rankSet.inc(index);
 
-        if (this.rankSet instanceof BasicRankAggs) {
-            if (this.rankSet.size() > 30) {
+        if (this.migrated === false) {
+            if (this.coll.size >= migrationThreshold) {
                 this.rankSet = this.migrateRankSet(this.order);
+                this.migrated = true;
             }
         }
     }
