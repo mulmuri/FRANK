@@ -11,15 +11,15 @@ describe("MaxSegTree", () => {
 
     it("should return non initialized value after upated", () => {
         segTree.update(3, 1);
-        //expect(segTree.query(0, 31)).toBe(1);
+        expect(segTree.query(0, 31)).toBe(1);
         expect(segTree.query(3, 3)).toBe(1);
-        //expect(segTree.query(3, 4)).toBe(1);
-        //expect(segTree.query(4, 4)).toBe(-Infinity);
+        expect(segTree.query(3, 4)).toBe(1);
+        expect(segTree.query(4, 4)).toBe(-Infinity);
     });
 });
 
 
-/*
+
 describe("MinSegTree", () => {
     let segTree = new MinSegTree(0, 31);
 
@@ -63,4 +63,4 @@ describe("SumSegTree", () => {
         expect(segTree.query(2, 2)).toBe(2);
         expect(segTree.query(0, 31)).toBe(6);
     });
-});*/
+});
