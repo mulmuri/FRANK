@@ -93,8 +93,6 @@ class SegmentTreeMethod {
         node.v = this.merge(t1, t2);
     }
 
-
-
     query(node: TreeNode, s: number, e: number, l: number, r: number): number {
         if (r < s || e < l) {
             return this.default;
@@ -103,7 +101,7 @@ class SegmentTreeMethod {
             return node.v;
         }
 
-        let m = (l + r) >> 1;
+        let m = (s + e) >> 1;
         let t1 = node.l ? this.query(node.l, s, m, l, r)     : this.default;
         let t2 = node.r ? this.query(node.r, m + 1, e, l, r) : this.default;
         return this.merge(t1, t2);
@@ -141,8 +139,8 @@ class SegTree {
         this.segTree.decrease(this.root, this.left, this.right, index);
     }
 
-    query(s: number, e: number): number {
-        return this.segTree.query(this.root, this.left, this.right, s, e);
+    query(l: number, r: number): number {
+        return this.segTree.query(this.root, this.left, this.right, l, r);
     }
 }
 
