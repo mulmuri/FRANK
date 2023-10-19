@@ -38,6 +38,63 @@ class SegmentTreeMethod {
         node.v = this.merge(t1, t2);
     }
 
+
+
+    increase(node: TreeNode, l: number, r: number, x: number) {
+        if (l === r) {
+            node.v++;
+            return;
+        }
+
+        let m = (l + r) >> 1;
+
+        if (x <= m) {
+            if (!node.l) {
+                node.l = new TreeNode(this.default);
+            }
+            this.increase(node.l, l, m, x);
+        } else {
+            if (!node.r) {
+                node.r = new TreeNode(this.default);
+            }
+            this.increase(node.r, m + 1, r, x);
+        }
+
+        let t1 = node.l ? node.l.v : this.default;
+        let t2 = node.r ? node.r.v : this.default;
+
+        node.v = this.merge(t1, t2);
+    }
+
+
+    decrease(node: TreeNode, l: number, r: number, x: number) {
+        if (l === r) {
+            node.v--;
+            return;
+        }
+
+        let m = (l + r) >> 1;
+
+        if (x <= m) {
+            if (!node.l) {
+                node.l = new TreeNode(this.default);
+            }
+            this.decrease(node.l, l, m, x);
+        } else {
+            if (!node.r) {
+                node.r = new TreeNode(this.default);
+            }
+            this.decrease(node.r, m + 1, r, x);
+        }
+
+        let t1 = node.l ? node.l.v : this.default;
+        let t2 = node.r ? node.r.v : this.default;
+
+        node.v = this.merge(t1, t2);
+    }
+
+
+
     query(node: TreeNode, s: number, e: number, l: number, r: number): number {
         if (r < s || e < l) {
             return this.default;
@@ -74,6 +131,14 @@ class SegTree {
 
     update(index: number, value: number): void {
         this.segTree.update(this.root, this.left, this.right, index, value);
+    }
+
+    increase(index: number): void {
+        this.segTree.increase(this.root, this.left, this.right, index);
+    }
+
+    decrease(index: number): void {
+        this.segTree.decrease(this.root, this.left, this.right, index);
     }
 
     query(s: number, e: number): number {
