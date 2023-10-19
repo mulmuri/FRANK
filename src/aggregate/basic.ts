@@ -1,5 +1,6 @@
 export class BasicRankAggs {
     set: Map<number, number>;
+    sz: number = 0;
 
     constructor() {
         this.set = new Map();
@@ -8,15 +9,22 @@ export class BasicRankAggs {
     inc(index: number): void {
         if (!this.set.has(index)) {
             this.set.set(index, 1);
+        } else {
+            this.set.set(index, this.set.get(index)! + 1);
         }
-        this.set.set(index, this.set.get(index)! + 1);
+        this.sz++;
     }
 
     dec(index: number): void {
         if (!this.set.has(index)) {
-            this.set.set(index, 0);
+            throw new Error("Cannot decrease a non-existing value");
+        }
+        if (this.set.get(index) == 0) {
+            throw new Error("Cannot decrease a zero value");
         }
         this.set.set(index, this.set.get(index)! - 1);
+
+        this.sz--;
     }
 
     rank(index: number): number {
@@ -34,7 +42,7 @@ export class BasicRankAggs {
     }
 
     size(): number {
-        return this.set.size;
+        return this.sz;
     }
 
     all(): Map<number, number> {
@@ -50,6 +58,6 @@ export class BasicRankAggsAsc extends BasicRankAggs {
 
 export class BasicRankAggsDesc extends BasicRankAggs {
     rank(index: number): number {
-        return this.size() - super.rank(index) - 1;
+        return this.size() - super.rank(index+1);
     }
 }
