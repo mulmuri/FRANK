@@ -70,3 +70,24 @@ describe("OptimizedRankDesc", () => {
         expect(rankAggs.rank(2)).toBe(0);
     });
 });
+
+
+
+describe("OptimizedRankDesc with initialization", () => {
+
+    const list = new Map<number, number>([
+        [1, 1],
+        [2, 2],
+        [3, 3],
+    ]);
+
+    const rankAggs = new OptimizedRankAggsDesc(0, 31, list);
+
+    it('should be initialized by index-value set', () => {
+
+        expect(rankAggs.rank(0)).toBe(6);
+        expect(rankAggs.rank(1)).toBe(5);
+        expect(rankAggs.rank(2)).toBe(3);
+        expect(rankAggs.rank(3)).toBe(0);
+    });
+});

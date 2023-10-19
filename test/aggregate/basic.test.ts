@@ -79,4 +79,11 @@ describe("BasicRankDesc", () => {
         expect(() => rankAggs.dec(1)).toThrowError();
         expect(() => rankAggs.dec(3)).toThrowError();
     });
+
+    it("should return return all data wheb all() is called", () => {
+        let result = rankAggs.all();
+        expect(result.size).not.toBe(0);
+        expect(result.get(1)).toBe(0);
+        expect(result.get(2)).toBe(1);
+    });
 });

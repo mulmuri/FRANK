@@ -1,6 +1,6 @@
 import { BasicRankAggsAsc, BasicRankAggsDesc, OptimizedRankAggsAsc, OptimizedRankAggsDesc } from "../../src/aggregate";
 
-describe('basic optimized consistency test for asc', () => {
+describe('basic and optimized rankaggs consistency test for asc', () => {
 
     const lRange = 0;
     const rRange = 255;
@@ -39,7 +39,7 @@ describe('basic optimized consistency test for asc', () => {
 
 
 
-describe('basic optimized consistency test for desc', () => {
+describe('basic and optimized rankaggs consistency test for desc', () => {
 
     const lRange = 0;
     const rRange = 255;
