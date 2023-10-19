@@ -23,6 +23,9 @@ describe("BasicRankAsc", () => {
         expect(rankAggs.rank(1)).toBe(0);
         expect(rankAggs.rank(2)).toBe(1);
         expect(rankAggs.rank(3)).toBe(2);
+
+        expect(rankAggs.exists(1)).toBe(true);
+        expect(rankAggs.size()).toBe(2);
     });
 
     it("should return proper rank after decrease", () => {
@@ -31,6 +34,9 @@ describe("BasicRankAsc", () => {
         expect(rankAggs.rank(1)).toBe(0);
         expect(rankAggs.rank(2)).toBe(0);
         expect(rankAggs.rank(3)).toBe(1);
+
+        expect(rankAggs.exists(1)).toBe(false);
+        expect(rankAggs.size()).toBe(1);
     });
 
     it("should throw error when decreasing invalid value", () => {
@@ -50,7 +56,7 @@ describe("BasicRankDesc", () => {
         expect(rankAggs.rank(2)).toBe(0);
     });
 
-    it("should return proper rank after updated", () => {
+    it("should return proper rank after increase", () => {
         rankAggs.inc(1);
         expect(rankAggs.rank(0)).toBe(1);
         expect(rankAggs.rank(1)).toBe(0);

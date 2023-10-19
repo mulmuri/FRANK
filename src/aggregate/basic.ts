@@ -38,7 +38,7 @@ export class BasicRankAggs {
     }
 
     exists(index: number): boolean {
-        return this.set.has(index);
+        return this.set.has(index) && this.set.get(index)! > 0;
     }
 
     size(): number {
