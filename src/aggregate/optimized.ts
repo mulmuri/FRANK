@@ -8,10 +8,17 @@ export class OptimizedRankAggs {
 
     sz: number = 0;
 
-    constructor(lRange: number, rRange: number) {
+    constructor(lRange: number, rRange: number, set?: Map<number, number>) {
         this.segtree = new SumSegTree(lRange, rRange);
         this.lRange = lRange;
         this.rRange = rRange;
+
+        if (set) {
+            for (let [key, value] of set || new Map()) {
+                this.segtree.update(key, value);
+                this.sz += value;
+            }
+        }
     }
 
     inc(index: number): void {
