@@ -10,14 +10,14 @@ export interface IUser extends RowDataPacket {
 }
 
 export interface RankResult extends RowDataPacket {
-    rank: number;
+    ranking: number;
 }
 
 
 
 class UserRepository {
 
-    async createTable(conn: Connection): Promise<void> {
+    async setupUserRepository(conn: Connection): Promise<void> {
         await conn.query<ResultSetHeader>(
             `CREATE TABLE IF NOT EXISTS User (
                 id    VARCHAR(16)  NOT NULL PRIMARY KEY,
@@ -29,7 +29,7 @@ class UserRepository {
         );
     }
 
-    async dropTable(conn: Connection): Promise<void> {
+    async teardownUserRepository(conn: Connection): Promise<void> {
         await conn.query<ResultSetHeader>(
             `DROP TABLE IF EXISTS User`
         );
@@ -37,8 +37,8 @@ class UserRepository {
 
     async insertUser(conn: Connection, user: IUser): Promise<void> {
         await conn.query<ResultSetHeader>(
-            `INSERT INTO User (grade, point, date) VALUES (?, ?, ?)`,
-            [user.grade, user.point, user.date]
+            `INSERT INTO User (id, grade, point, date) VALUES (?, ?, ?, ?)`,
+            [user.id, user.grade, user.point, user.date]
         );
     }
 
@@ -52,7 +52,7 @@ class UserRepository {
     async updateUser(conn: Connection, user: IUser): Promise<void> {
         await conn.query<ResultSetHeader>(
             `UPDATE User SET grade = ?, point = ?, date = ? WHERE id = ?`,
-            [user.grade, user.point, user.date, user.name]
+            [user.grade, user.point, user.date, user.id]
         );
     }
 
@@ -64,12 +64,15 @@ class UserRepository {
         return rows.length ? [rows[0], true] : [rows[0], false];
     }
 
-    async getUserRank(conn: Connection, userId: string): Promise<[number, boolean]> {
+    async getUserRank(conn: Connection, id: string): Promise<[number, boolean]> {
         const [rows] = await conn.query<RankResult[]>(
-            `SELECT RANK() OVER (ORDER BY class ASC, point DESC, date DESC) AS ranking FROM User WHERE id = ?`,
-            [userId]
+            `SELECT RANK() OVER (ORDER BY grade ASC, point DESC, date DESC) AS ranking FROM User WHERE id = ?`,
+            [id]
         );
-        return rows[0].rank ? [rows[0].rank, true] : [0, false];
+        if (rows.length && rows[0].ranking !== undefined) {
+            return [rows[0].ranking, true];
+        }
+        return [-1, false];
     }
 }
 
