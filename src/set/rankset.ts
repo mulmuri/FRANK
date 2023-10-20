@@ -14,10 +14,9 @@ class RankSet<I extends Index> {
     }
 
     inc(index: I): void {
-
         let curColl = this.rootColl;
-        for (const [i, e] of index.entries()) {
 
+        for (const [i, e] of index.entries()) {
             let coll = this.rootColl.inc(e);
 
             if (!coll) {
@@ -32,7 +31,6 @@ class RankSet<I extends Index> {
     }
 
     dec(index: I): void {
-
         let curColl = this.rootColl;
 
         for (const [i, e] of index.entries()) {
@@ -50,7 +48,6 @@ class RankSet<I extends Index> {
     }
 
     rank(index: I): number {
-
         let curColl = this.rootColl;
         let sum = 0;
 
@@ -67,8 +64,11 @@ class RankSet<I extends Index> {
 
             curColl = coll!;
         }
-
         return sum;
+    }
+
+    exists(index: I): boolean {
+        
     }
 }
 
