@@ -42,6 +42,13 @@ class UserRepository {
         );
     }
 
+    async insertUserMany(conn: Connection, userList: IUser[]): Promise<void> {
+        await conn.query<ResultSetHeader>(
+            `INSERT INTO User (id, grade, point, date) VALUES ?`,
+            [userList.map(user => [user.id, user.grade, user.point, user.date])]
+        );
+    }
+
     async removeUser(conn: Connection, id: string): Promise<void> {
         await conn.query<ResultSetHeader>(
             `DELETE FROM User WHERE id = ?`,
