@@ -29,6 +29,18 @@ describe("MySQL", () => {
             point: 300,
             date: new Date()
         } as IUser,
+        {
+            id: "mysql",
+            grade: "C",
+            point: 1301,
+            date: new Date()
+        } as IUser,
+        {
+            id: "postgres",
+            grade: "B",
+            point: 2112,
+            date: new Date()
+        } as IUser,
     ]
 
     const updatedUser: IUser = {
@@ -62,9 +74,7 @@ describe("MySQL", () => {
 
         try {
             await conn.beginTransaction();
-            for (const user of userList) {
-                await userRepository.insertUser(conn, user);
-            }
+            await userRepository.insertUser(conn, userList[0]);
             await conn.commit();
 
         } catch (e) {
@@ -75,6 +85,23 @@ describe("MySQL", () => {
             conn.release();
         }
     });
+
+    it("should insert user many", async () => {
+        const conn = await db.session();
+
+        try {
+            await conn.beginTransaction();
+            await userRepository.insertUserMany(conn, userList.slice(1));
+            await conn.commit();
+
+        } catch (e) {
+            await conn.rollback();
+            expect(e).toBe(null);
+
+        } finally {
+            conn.release();
+        }
+    })
 
     it("should update user", async () => {
         const conn = await db.session();
