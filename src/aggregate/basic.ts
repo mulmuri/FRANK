@@ -2,8 +2,14 @@ export class BasicRankAggs {
     set: Map<number, number>;
     sz: number = 0;
 
-    constructor() {
+    constructor(set?: Map<number, number>) {
         this.set = new Map();
+        if (set) {
+            for (let [key, value] of set || new Map()) {
+                this.set.set(key, value);
+                this.sz += value;
+            }
+        }
     }
 
     inc(index: number): void {
