@@ -1,4 +1,4 @@
-import { Order } from "../model/basic";
+import { ColumnSetting, Index, Order } from "../model/basic";
 import { BasicRankAggs, BasicRankAggsAsc, BasicRankAggsDesc } from "./basic";
 import { match } from 'ts-pattern';
 import { OptimizedRankAggsAsc, OptimizedRankAggsDesc } from "./optimized";
@@ -10,11 +10,11 @@ const migrationThreshold = 32;
 
 class ColumnAggs {
     rankSet: IRankAggs;
-    coll: Map<number, ColumnAggs | null>
+    coll: Map<Number, ColumnAggs>
 
-    order: Order;
-    lRange: number;
-    rRange: number;
+    setting: ColumnSetting;
+    idx: Number;
+
     migrated: boolean = false;
 
     private initializeRankSet(order: Order): IRankAggs {
@@ -27,51 +27,71 @@ class ColumnAggs {
     private migrateRankSet(order: Order): IRankAggs {
         let oldset = this.rankSet as BasicRankAggs;
         let newset = match<Order, IRankAggs>(order)
-        .with('asc',  () => new OptimizedRankAggsAsc(this.lRange, this.rRange, oldset.all()))
-        .with('desc', () => new OptimizedRankAggsDesc(this.lRange, this.rRange, oldset.all()))
+        .with('asc',  () => new OptimizedRankAggsAsc(this.setting.lRange, this.setting.rRange, oldset.all()))
+        .with('desc', () => new OptimizedRankAggsDesc(this.setting.lRange, this.setting.rRange, oldset.all()))
         .exhaustive();
         return newset;
     }
 
-    constructor(order: Order, lRange: number, rRange: number) {
-        this.rankSet = this.initializeRankSet(order);
+    constructor(index: number, setting: ColumnSetting) {
+
+        this.idx = index;
+        this.setting = setting;
+
+        this.rankSet = this.initializeRankSet(setting.order);
         this.coll = new Map();
-        this.order = order;
-        this.lRange = lRange;
-        this.rRange = rRange;
     }
 
-    exists(index: number): boolean {
-        return this.coll.has(index);
+    index(): Number {
+        return this.idx;
     }
 
-    insert(index: number, colset: ColumnAggs): void {
-        if (this.coll.has(index)) {
-            throw new Error("Cannot insert a duplicate value");
+    insert(coll: ColumnAggs): void {
+
+        if (this.coll.has(coll.index())) {
+            throw new Error("index already exists");
         }
-        this.coll.set(index, colset);
-        this.rankSet.inc(index);
+
+        this.coll.set(coll.index(), coll);
 
         if (this.migrated === false) {
             if (this.coll.size >= migrationThreshold) {
-                this.rankSet = this.migrateRankSet(this.order);
+                this.rankSet = this.migrateRankSet(this.setting.order);
                 this.migrated = true;
             }
         }
     }
 
-    inc(index: number): ColumnAggs | null {
+    inc(index: number): void {
+        if (!this.coll.has(index)) {
+            throw new Error("index does not exist");
+        }
         this.rankSet.inc(index);
-        return this.coll.get(index) ?? null;
     }
 
-    dec(index: number): ColumnAggs | null {
+    dec(index: number): void {
+        if (!this.coll.has(index)) {
+            throw new Error("index does not exist");
+        }
+
+        if (this.coll.get(index)!.size() === 0) {
+            throw new Error("cannot decrease a zero value");
+        }
+
         this.rankSet.dec(index);
-        return this.coll.get(index) ?? null;
     }
 
     count(index: number): number {
         return this.rankSet.rank(index);
+    }
+
+    size(): number {
+        return this.coll.size;
+    }
+
+    next(index: number): (ColumnAggs | null) {
+        let coll = this.coll.get(index);
+        return coll ? coll : null;
     }
 }
 
