@@ -62,22 +62,16 @@ class ColumnAggs {
         }
     }
 
+    next(index: number): (ColumnAggs | null) {
+        let coll = this.coll.get(index);
+        return coll ? coll : null;
+    }
+
     inc(index: number): void {
-        if (!this.coll.has(index)) {
-            throw new Error("index does not exist");
-        }
         this.rankSet.inc(index);
     }
 
     dec(index: number): void {
-        if (!this.coll.has(index)) {
-            throw new Error("index does not exist");
-        }
-
-        if (this.coll.get(index)!.size() === 0) {
-            throw new Error("cannot decrease a zero value");
-        }
-
         this.rankSet.dec(index);
     }
 
@@ -87,11 +81,6 @@ class ColumnAggs {
 
     size(): number {
         return this.coll.size;
-    }
-
-    next(index: number): (ColumnAggs | null) {
-        let coll = this.coll.get(index);
-        return coll ? coll : null;
     }
 }
 
