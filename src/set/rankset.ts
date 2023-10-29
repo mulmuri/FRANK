@@ -1,75 +1,68 @@
 import { ColumnAggs } from "../aggregate";
-import { Index, IndexFormat, Order } from "../model/basic";
+import { Index, ColumnSetting, IndexSetting } from "../model/basic";
 
 
 
 class RankSet<I extends Index> {
     
     rootColl: ColumnAggs;
-    indexFormat: IndexFormat;
+    indexSetting: IndexSetting;
 
-    constructor(indexFormat: IndexFormat) {
-        this.rootColl = new ColumnAggs(indexFormat[0].order, indexFormat[0].min, indexFormat[0].max);
-        this.indexFormat = indexFormat;
+    constructor(indexSetting: IndexSetting) {
+        this.rootColl = new ColumnAggs(0, indexSetting[0])
+        this.indexSetting = indexSetting;
     }
 
-    inc(index: I): void {
+    increase(index: I): void {
         let curColl = this.rootColl;
 
-        for (const [i, e] of index.entries()) {
-            let coll = this.rootColl.inc(e);
+        for (const [i, element] of index.entries()) {
 
-            if (!coll) {
-                if (i === index.length - 1) {
-                    throw new Error("the last coll should not be null");
+            let nxtColl = curColl.next(element);
+
+            if (!nxtColl) {
+                if (i !== this.indexSetting.length - 1) {
+                    nxtColl = new ColumnAggs(element, this.indexSetting[i+1]);
+                    curColl.insert(nxtColl);
                 }
-                continue;
             }
 
-            curColl = coll!;
+            curColl.inc(element);
+
+            curColl = nxtColl!;
         }
     }
 
-    dec(index: I): void {
+    decrease(index: I): void {
         let curColl = this.rootColl;
 
-        for (const [i, e] of index.entries()) {
-            let coll = this.rootColl.dec(e);
+        for (const [i, element] of index.entries()) {
 
-            if (!coll) {
-                if (i === index.length - 1) {
-                    throw new Error("the last coll should not be null");
-                }
-                continue;
-            }
+            let nxtColl = curColl.next(element);
 
-            curColl = coll!;
-        }
+            curColl.dec(element);
+
+            curColl = nxtColl!;
+        };
     }
 
     rank(index: I): number {
         let curColl = this.rootColl;
         let sum = 0;
 
-        for (const [i, e] of index.entries()) {
-            let coll = this.rootColl.dec(e);
+        for (const element of index) {
+            sum += curColl.count(element);
 
-            if (!coll) {
-                if (i === index.length - 1) {
-                    throw new Error("the last coll should not be null");
-                }
+            let nxtColl = curColl.next(element);
+            if (!nxtColl) {
                 continue;
             }
-            sum += coll.count(e)
 
-            curColl = coll!;
+            curColl = nxtColl;
         }
         return sum;
     }
 
-    exists(index: I): boolean {
-        
-    }
 }
 
 export default RankSet;
