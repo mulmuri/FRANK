@@ -19,7 +19,6 @@ class IndexSet<K extends Key, I extends Index> {
     }
 
     update(key: K, index: I): void {
-        console.log(`key: ${key}, exists: ${this.map.has(key)}`);
         if (!this.map.has(key)) {
             throw new Error("Key does not exist.");
         }
