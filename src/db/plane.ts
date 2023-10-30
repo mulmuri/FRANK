@@ -46,6 +46,9 @@ export class ControlPlane<K extends Key, I extends Index> {
 
     remove(key: K): void {
         let index = this.indexset.index(key);
+        if (!index) {
+            throw new Error("Key does not exist.");
+        }
         this.indexset.remove(key);
         this.keyset.remove(key, index);
         this.rankset.decrease(index);
@@ -53,6 +56,9 @@ export class ControlPlane<K extends Key, I extends Index> {
 
     update(key: K, index: I): void {
         let oldIndex = this.indexset.index(key);
+        if (!oldIndex) {
+            throw new Error("Key does not exist.");
+        }
         this.indexset.update(key, index);
         this.keyset.remove(key, oldIndex);
         this.keyset.insert(key, index);
@@ -65,10 +71,14 @@ export class ControlPlane<K extends Key, I extends Index> {
     }
 
     index(key: K): I {
-        return this.indexset.index(key);
+        return this.indexset.index(key) || (() => {throw new Error("Key does not exist.")})();
     }
 
     rank(key: K): number {
-        return this.rankset.rank(this.indexset.index(key));
+        let index = this.indexset.index(key);
+        if (!index) {
+            throw new Error("Key does not exist.");
+        }
+        return this.rankset.rank(index);
     }
 }
