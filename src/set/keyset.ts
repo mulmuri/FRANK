@@ -1,29 +1,59 @@
 import { Index, Key } from "../model/basic";
 
 
-
 class KeySet<K extends Key, I extends Index> {
 
-    map: Map<I, Set<K>>;
+    map: Map<bigint, Set<K>>;
 
     constructor() {
-        this.map = new Map();
+        this.map = new Map<bigint, Set<K>>();
+    }
+
+    private serialize(index: I): bigint {
+        let result = BigInt(0);
+        for (let i = 0; i < index.length; i++) {
+            result = result * BigInt(1 << 64) + BigInt(index[i]);
+        }
+        return result;
+    }
+
+    private deserialize(index: bigint): I {
+        let result: I = [] as unknown as I;
+        while (index > BigInt(0)) {
+            result.push(Number(index % BigInt(1 << 64)));
+            index = index / BigInt(1 << 64);
+        }
+        return result;
     }
 
     insert(key: K, index: I): void {
-        if (!this.map.has(index)) {
-            this.map.set(index, new Set([key]));
+
+        const serializedIndex = this.serialize(index);
+
+        if (!this.map.has(serializedIndex)) {
+            this.map.set(serializedIndex, new Set([key]));
+            console.log(this.map.get(serializedIndex))
+            console.log(`exists: ${this.map.has(serializedIndex)}`)
         } else {
-            this.map.get(index)!.add(key);
+            this.map.get(serializedIndex)!.add(key);
         }
     }
 
     remove(key: K, index: I): void {
-        this.map.get(index)!.delete(key);
+        const serializedIndex = this.serialize(index);
+        this.map.get(serializedIndex)!.delete(key);
     }
 
-    keys(index: I): K[] {
-        return Array.from(this.map.get(index)!);
+    keys(index: I): K[] | null {
+        const serializedIndex = this.serialize(index);
+        console.log(`keys(): ${this.map.has(serializedIndex)}  ${this.map.get(serializedIndex)}`)
+        if (!this.map.has(serializedIndex)) {
+            return null;
+        }
+
+        console.log(`returned: ${Array.from(this.map.get(serializedIndex)!)}`)
+
+        return Array.from(this.map.get(serializedIndex)!);
     }
 }
 
