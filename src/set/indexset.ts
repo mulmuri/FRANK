@@ -19,11 +19,15 @@ class IndexSet<K extends Key, I extends Index> {
     }
 
     update(key: K, index: I): void {
+        console.log(`key: ${key}, exists: ${this.map.has(key)}`);
+        if (!this.map.has(key)) {
+            throw new Error("Key does not exist.");
+        }
         this.map.set(key, index);
     }
 
-    index(key: K): I {
-        return this.map.get(key)!;
+    index(key: K): I | null {
+        return this.map.get(key) || null;
     }
 }
 
