@@ -54,6 +54,14 @@ describe("KeySet with two dim", () => {
         expect(set.keys([2, 2])).toEqual([]);
     });
 
+});
 
 
+describe("KeySet with huge dim", () => {
+
+    it("should get right value of inserted", () => {
+        const set = new KeySet<string, [number, number, number, number, number, number, number, number, number]>();
+        set.insert("a", [1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        expect(set.keys([1, 2, 3, 4, 5, 6, 7, 8, 9])).toEqual(["a"]);
+    });
 });
