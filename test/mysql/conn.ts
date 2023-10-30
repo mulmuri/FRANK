@@ -28,8 +28,12 @@ class DB {
         });
     }
         
-    session(): Promise<PoolConnection> {
+    async session(): Promise<PoolConnection> {
         return this.pool.getConnection();
+    }
+
+    async close(): Promise<void> {
+        await this.pool.end();
     }
 }
 

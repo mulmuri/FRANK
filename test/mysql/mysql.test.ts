@@ -10,11 +10,19 @@ const connectionConfig: connConfig = {
     database: process.env.DB_NAME || (() => { throw new Error("environment DB_NAME is not set"); })(),
 };
 
+let db: DB;
+
+beforeAll(() => {
+    db = new DB(connectionConfig);
+});
+
+afterAll(async () => {
+    await db.close();
+});
+
 
 
 describe("MySQL", () => {
-
-    const db = new DB(connectionConfig);
 
     const userList: IUser[] = [
         {
