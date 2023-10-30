@@ -32,8 +32,6 @@ class KeySet<K extends Key, I extends Index> {
 
         if (!this.map.has(serializedIndex)) {
             this.map.set(serializedIndex, new Set([key]));
-            console.log(this.map.get(serializedIndex))
-            console.log(`exists: ${this.map.has(serializedIndex)}`)
         } else {
             this.map.get(serializedIndex)!.add(key);
         }
@@ -46,12 +44,9 @@ class KeySet<K extends Key, I extends Index> {
 
     keys(index: I): K[] | null {
         const serializedIndex = this.serialize(index);
-        console.log(`keys(): ${this.map.has(serializedIndex)}  ${this.map.get(serializedIndex)}`)
         if (!this.map.has(serializedIndex)) {
             return null;
         }
-
-        console.log(`returned: ${Array.from(this.map.get(serializedIndex)!)}`)
 
         return Array.from(this.map.get(serializedIndex)!);
     }
