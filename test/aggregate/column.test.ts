@@ -4,26 +4,28 @@ import { BasicRankAggs, ColumnAggs, IRankAggs, OptimizedRankAggs } from "../../s
 
 describe('ColumnAggs.migrateRankSet', () => {
 
-    const lRange = 0;
-    const rRange = 63;
-    const order = 'asc' as const;
+    const setting = {
+        order: 'asc' as const,
+        lRange: 0,
+        rRange: 63
+    }
 
-    const columnAggs = new ColumnAggs(order, lRange, rRange);
+    const columnAggs = new ColumnAggs(0, setting);
 
     const basic = columnAggs.rankSet
     
     for (let i=0; i<1000; i++) {
-        const val = Math.floor(Math.random() * (rRange - lRange + 1)) + lRange;
+        const val = Math.floor(Math.random() * (setting.rRange - setting.lRange + 1)) + setting.lRange;
         basic.inc(val);
     }
 
-    const optimized = (columnAggs as any).migrateRankSet(order) as IRankAggs;
+    const optimized = (columnAggs as any).migrateRankSet(setting.order) as IRankAggs;
 
     const count = 10000;
 
     it('should return same result', () => {
         for (let i = 0; i < count; i++) {
-            const val = Math.floor(Math.random() * (rRange - lRange + 1)) + lRange;
+            const val = Math.floor(Math.random() * (setting.rRange - setting.lRange + 1)) + setting.lRange;
 
             const choice = Math.floor(Math.random() * 3);
 
@@ -50,20 +52,23 @@ describe('ColumnAggs.migrateRankSet', () => {
 
 describe('ColumnAggs', () => {
 
-    const lRange = 0;
-    const rRange = 63;
-    const order = 'asc' as const;
+    const setting = {
+        order: 'asc' as const,
+        lRange: 0,
+        rRange: 63
+    }
 
-    const columnAggs = new ColumnAggs(order, lRange, rRange);
+    const columnAggs = new ColumnAggs(0, setting);
 
     let count = 0;
     const threshold = 32;
 
     it('should be migrated after insertions exceeding threshold', () => {
         while (count != threshold -1) {
-            const val = Math.floor(Math.random() * (rRange - lRange + 1)) + lRange;
-            if (!columnAggs.exists(val)) {
-                columnAggs.insert(val, new ColumnAggs(order, lRange, rRange));
+            const val = Math.floor(Math.random() * (setting.rRange - setting.lRange + 1)) + setting.lRange;
+            const nxtColl = columnAggs.next(val);
+            if (!nxtColl) {
+                columnAggs.insert(new ColumnAggs(val, setting));
                 count++;
             } else {
                 columnAggs.inc(val);
@@ -74,9 +79,10 @@ describe('ColumnAggs', () => {
         expect(columnAggs.migrated).toBe(false);
         
         while (count != threshold) {
-            const val = Math.floor(Math.random() * (rRange - lRange + 1)) + lRange;
-            if (!columnAggs.exists(val)) {
-                columnAggs.insert(val, new ColumnAggs(order, lRange, rRange));
+            const val = Math.floor(Math.random() * (setting.rRange - setting.lRange + 1)) + setting.lRange;
+            const nxtColl = columnAggs.next(val);
+            if (!nxtColl) {
+                columnAggs.insert(new ColumnAggs(val, setting));
                 count++;
             } else {
                 columnAggs.inc(val);
