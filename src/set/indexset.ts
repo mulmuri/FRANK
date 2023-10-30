@@ -11,10 +11,16 @@ class IndexSet<K extends Key, I extends Index> {
     }
 
     insert(key: K, index: I): void {
+        if (this.map.has(key)) {
+            throw new Error("Key already exists.");
+        }
         this.map.set(key, index);
     }
 
     remove(key: K): void {
+        if (!this.map.has(key)) {
+            throw new Error("Key does not exist.");
+        }
         this.map.delete(key);
     }
 

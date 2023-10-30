@@ -42,10 +42,10 @@ class KeySet<K extends Key, I extends Index> {
         this.map.get(serializedIndex)!.delete(key);
     }
 
-    keys(index: I): K[] | null {
+    keys(index: I): K[] {
         const serializedIndex = this.serialize(index);
         if (!this.map.has(serializedIndex)) {
-            return null;
+            return [];
         }
 
         return Array.from(this.map.get(serializedIndex)!);
