@@ -1,5 +1,6 @@
 import { IndexFormat } from "../../src/model/basic";
 import { AccessPlane, IAccessPlane } from "../../src/db/accessor";
+import { InvalidIndexFormatLengthError, InvalidIndexFormatRangeError, InvalidIndexFormatRangeNotSafeError, InvalidIndexRangeError, KeyNotExistsError } from "../../src/db/errors";
 
 
 
@@ -124,5 +125,77 @@ describe("AccessPlane with length 3 index", () => {
         expect(control.rank("g")).toEqual(5);
         expect(control.rank("h")).toEqual(6);
         expect(control.rank("i")).toEqual(7);
+    });
+});
+
+
+describe("AccessPlane initializer error handling", () => {
+
+    it("should throw error on invalid index length", () => {
+        expect(() => new AccessPlane([
+            {order: 'asc', min: 0, max: 63},
+            {order: 'desc', min: 0, max: 1e9}
+        ])).not.toThrow();
+
+        expect(() => new AccessPlane([] as any)).toThrowError(InvalidIndexFormatLengthError);
+    })
+
+    it("should throw error on invalid index format range", () => {
+        expect(() => new AccessPlane([
+            {order: 'asc', min: 0, max: 63},
+            {order: 'desc', min: 0, max: 1e9}
+        ])).not.toThrow();
+
+        expect(() => new AccessPlane([
+            {order: 'asc', min: 0, max: 63},
+            {order: 'desc', min: 1e9, max: 0},
+        ])).toThrowError(InvalidIndexFormatRangeError);
+    });
+
+    it("should throw error when range exceed safe integer", () => {
+
+        expect(() => new AccessPlane([
+            {order: 'asc', min: 0, max: 63},
+            {order: 'desc', min: Number.MIN_SAFE_INTEGER - 1, max: 0},
+        ])).toThrowError(InvalidIndexFormatRangeNotSafeError);
+
+        expect(() => new AccessPlane([
+            {order: 'asc', min: 0, max: 63},
+            {order: 'desc', min: 0, max: Number.MAX_SAFE_INTEGER + 1},
+        ])).toThrowError(InvalidIndexFormatRangeNotSafeError);
+
+    });
+});
+
+
+describe("AccessPlane method error handling", () => {
+    const setting: IndexFormat = [
+        {order: 'asc', min: 0, max: 63},
+        {order: 'desc', min: 0, max: 1e9},
+    ];
+
+    const control: IAccessPlane<string, [number, number]> = new AccessPlane(setting);
+
+    control.insert("a", [32, 2123213]);
+    
+    control.insert("c", [1, 2]);
+
+    it("should throw error on invalid index range", () => {
+
+        expect(() => control.insert("b", [0, 0])).not.toThrow();
+        expect(() => control.insert("b", [12, 3241])).not.toThrow();
+        expect(() => control.insert("c", [63, 1e9])).not.toThrow();
+
+        expect(() => control.insert("d", [-1, 123])).toThrowError(InvalidIndexRangeError);
+        expect(() => control.insert("d", [64, 123])).toThrowError(InvalidIndexRangeError);
+    });
+
+    it("should throw error on not existing key", () => {
+        expect(() => control.remove("d")).toThrowError(KeyNotExistsError);
+        expect(() => control.update("d", [1, 2])).toThrowError(KeyNotExistsError);
+        expect(() => control.index("d")).toThrowError(KeyNotExistsError);
+        expect(() => control.rank("d")).toThrowError(KeyNotExistsError);
+
+        expect(() => control.exists("d")).not.toThrow();
     });
 });

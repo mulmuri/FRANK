@@ -14,10 +14,6 @@ describe('IndexSet', () => {
         expect(set.index("a")).toEqual([2]);
     });
 
-    it('suould throw error when update non-exist key', () => {
-        expect(() => set.update("b", [3])).toThrowError("Key does not exist.");
-    });
-
     it('should get right value of updated', () => {
         set.update("a", [3]);
         expect(set.index("a")).toEqual([3]);
