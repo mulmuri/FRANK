@@ -24,6 +24,12 @@ class Random {
         return this.random.integer(low, high);
     }
 
+    chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    charUpper(): string {
+        const randomIndex = this.random.integer(0, this.chars.length-1);
+        return this.chars[randomIndex];
+    }
+
     string(length: number): string {
         return this.random.string(length);
     }
@@ -32,6 +38,13 @@ class Random {
         const hash = crypto.createHash('sha256'); // You can use 'sha256', 'sha1', 'md5', etc.
         hash.update(Number.toString());
         return hash.digest('hex');
+    }
+
+    startDate = new Date(2000, 0, 1);  // January 1, 2000
+    endDate = new Date(2023, 12, 31);  // December 31, 2023
+
+    date(): Date {
+        return new Date(this.startDate.getTime() + Math.random() * (this.endDate.getTime() - this.startDate.getTime()));
     }
 }
 
