@@ -1,5 +1,5 @@
 import { Mutex } from 'async-mutex';
-import { IAccessPlane } from '../set/accessor';
+import { IAccessPlane } from './accessor';
 import { Index, Key } from '../model/basic';
 
 

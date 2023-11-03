@@ -1,5 +1,5 @@
 import { IndexFormat } from "../../src/model/basic";
-import { AccessPlane, IAccessPlane } from "../../src/set/accessor";
+import { AccessPlane, IAccessPlane } from "../../src/db/accessor";
 
 
 
