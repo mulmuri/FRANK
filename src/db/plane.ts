@@ -10,6 +10,7 @@ export interface IControlPlane<K extends Key, I extends Index> {
     update(key: K, index: I): void;
     keys(index: I): K[];
     index(key: K): I;
+    exists(key: K): boolean;
     rank(key: K): number;
 }
 
@@ -72,6 +73,10 @@ export class ControlPlane<K extends Key, I extends Index> {
 
     index(key: K): I {
         return this.indexset.index(key) || (() => {throw new Error("Key does not exist.")})();
+    }
+
+    exists(key: K): boolean {
+        return this.indexset.index(key) !== null;
     }
 
     rank(key: K): number {
