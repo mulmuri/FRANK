@@ -23,10 +23,7 @@ export class BasicRankAggs {
 
     dec(index: number): void {
         if (!this.set.has(index)) {
-            throw new Error("Cannot decrease a non-existing value");
-        }
-        if (this.set.get(index) == 0) {
-            throw new Error("Cannot decrease a zero value");
+            this.set.set(index, 0);
         }
         this.set.set(index, this.set.get(index)! - 1);
 

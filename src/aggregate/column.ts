@@ -49,7 +49,7 @@ class ColumnAggs {
     insert(coll: ColumnAggs): void {
 
         if (this.coll.has(coll.index())) {
-            throw new Error("index already exists");
+            console.log("warning! collumAggs is overrided");
         }
 
         this.coll.set(coll.index(), coll);
