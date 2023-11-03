@@ -4,7 +4,7 @@ import KeySet from "../set/keyset";
 import RankSet from "../set/rankset";
 
 
-export interface IControlPlane<K extends Key, I extends Index> {
+export interface IAccessPlane<K extends Key, I extends Index> {
     insert(key: K, index: I): void;
     remove(key: K): void;
     update(key: K, index: I): void;
@@ -16,7 +16,7 @@ export interface IControlPlane<K extends Key, I extends Index> {
 
 
 
-export class ControlPlane<K extends Key, I extends Index> {
+export class AccessPlane<K extends Key, I extends Index> {
 
     keyset: KeySet<K, I>;
     indexset: IndexSet<K, I>;

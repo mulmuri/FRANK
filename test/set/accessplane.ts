@@ -1,14 +1,14 @@
-import { ControlPlane, IControlPlane } from "../../src/db/plane";
 import { IndexFormat } from "../../src/model/basic";
+import { AccessPlane, IAccessPlane } from "../../src/set/accessor";
 
 
 
 
-describe("ControlPlane with length 1 index", () => {
+describe("AccessPlane with length 1 index", () => {
 
     const setting: IndexFormat = [{order: 'asc', min: 0, max: 63}]
 
-    const control: IControlPlane<string, [number]> = new ControlPlane(setting);
+    const control: IAccessPlane<string, [number]> = new AccessPlane(setting);
 
     it("should insert return proper index after insertion", () => {
         control.insert("a", [1]);
@@ -79,7 +79,7 @@ describe("ControlPlane with length 1 index", () => {
 });
 
 
-describe("ControlPlane with length 3 index", () => {
+describe("AccessPlane with length 3 index", () => {
 
     const setting: IndexFormat = [
         {order: 'asc', min: 0, max: 63},
@@ -87,7 +87,7 @@ describe("ControlPlane with length 3 index", () => {
         {order: 'asc', min: 0, max: 63}
     ];
 
-    const control: IControlPlane<string, [number, number, number]> = new ControlPlane(setting);
+    const control: IAccessPlane<string, [number, number, number]> = new AccessPlane(setting);
 
     it("should insert return proper index after insertion", () => {
         control.insert("a", [1, 2, 3]);
