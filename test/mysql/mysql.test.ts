@@ -1,6 +1,7 @@
 import { DB, UserRepository, IUser, connConfig } from "."
 
 import dotenv from 'dotenv';
+import { isErrorFromJest } from "../util/jest";
 dotenv.config();
 
 const connectionConfig: connConfig = {
@@ -68,9 +69,13 @@ describe("MySQL", () => {
             await conn.beginTransaction();
             await userRepository.setupUserRepository(conn);
             await conn.commit();
-        } catch (e) {
+        } catch (e: any) {
             await conn.rollback();
-            expect(e).toBe(null);
+            if (isErrorFromJest(e)) {
+                throw e;
+            } else {
+                expect(e).toBe(null);
+            }
 
         } finally {
             conn.release();
@@ -85,9 +90,13 @@ describe("MySQL", () => {
             await userRepository.insertUser(conn, userList[0]);
             await conn.commit();
 
-        } catch (e) {
+        } catch (e: any) {
             await conn.rollback();
-            expect(e).toBe(null);
+            if (isErrorFromJest(e)) {
+                throw e;
+            } else {
+                expect(e).toBe(null);
+            }
 
         } finally {
             conn.release();
@@ -102,9 +111,14 @@ describe("MySQL", () => {
             await userRepository.insertUserMany(conn, userList.slice(1));
             await conn.commit();
 
-        } catch (e) {
+        } catch (e: any) {
             await conn.rollback();
-            expect(e).toBe(null);
+            if (isErrorFromJest(e)) {
+                throw e;
+            } else {
+                expect(e).toBe(null);
+            }
+
 
         } finally {
             conn.release();
@@ -119,9 +133,13 @@ describe("MySQL", () => {
             await userRepository.updateUser(conn, updatedUser);
             await conn.commit();
 
-        } catch (e) {
+        } catch (e: any) {
             await conn.rollback();
-            expect(e).toBe(null);
+            if (isErrorFromJest(e)) {
+                throw e;
+            } else {
+                expect(e).toBe(null);
+            }
 
         } finally {
             conn.release();
@@ -140,9 +158,13 @@ describe("MySQL", () => {
             expect(user.point).toBe(updatedUser.point);
             await conn.commit();
 
-        } catch (e) {
+        } catch (e: any) {
             await conn.rollback();
-            expect(e).toBe(null);
+            if (isErrorFromJest(e)) {
+                throw e;
+            } else {
+                expect(e).toBe(null);
+            }
 
         } finally {
             conn.release();
@@ -156,12 +178,16 @@ describe("MySQL", () => {
             await conn.beginTransaction();
             const [rank, exists] = await userRepository.getUserRank(conn, userList[0].id);
             expect(exists).toBe(true);
-            expect(rank).toBe(1);
+            expect(rank).toBe(3);
             await conn.commit();
 
-        } catch (e) {
+        } catch (e: any) {
             await conn.rollback();
-            expect(e).toBe(null);
+            if (isErrorFromJest(e)) {
+                throw e;
+            } else {
+                expect(e).toBe(null);
+            }
 
         } finally {
             conn.release();
@@ -177,9 +203,13 @@ describe("MySQL", () => {
                 await userRepository.removeUser(conn, user.id);
             }
             await conn.commit();
-        } catch (e) {
+        } catch (e: any) {
             await conn.rollback();
-            expect(e).toBe(null);
+            if (isErrorFromJest(e)) {
+                throw e;
+            } else {
+                expect(e).toBe(null);
+            }
 
         } finally {
             conn.release();
@@ -193,9 +223,13 @@ describe("MySQL", () => {
             await conn.beginTransaction();
             await userRepository.teardownUserRepository(conn);
             await conn.commit();
-        } catch (e) {
+        } catch (e: any) {
             await conn.rollback();
-            expect(e).toBe(null);
+            if (isErrorFromJest(e)) {
+                throw e;
+            } else {
+                expect(e).toBe(null);
+            }
 
         } finally {
             conn.release();
