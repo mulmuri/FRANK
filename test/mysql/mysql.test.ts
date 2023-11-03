@@ -7,8 +7,8 @@ dotenv.config();
 const connectionConfig: connConfig = {
     host: process.env.DB_HOST || (() => { throw new Error("environment DB_HOST is not set"); })(),
     user: process.env.DB_USER || (() => { throw new Error("environment DB_USER is not set"); })(),
-    password: process.env.DB_PASS || (() => { throw new Error("environment DB_PASS is not set"); })(),
     database: process.env.DB_NAME || (() => { throw new Error("environment DB_NAME is not set"); })(),
+    password: process.env.DB_PASS || "",
 };
 
 let db: DB;
