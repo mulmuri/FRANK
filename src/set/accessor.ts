@@ -2,7 +2,7 @@ import { ColumnSetting, Index, IndexFormat, IndexSetting, Key } from "../model/b
 import IndexSet from "../set/indexset";
 import KeySet from "../set/keyset";
 import RankSet from "../set/rankset";
-import { InvalidIndexFormatLengthError, InvalidIndexFormatRangeError, InvalidIndexRangeError, KeyNotExistsError } from "./errors";
+import { FrankError, InvalidIndexFormatLengthError, InvalidIndexFormatRangeError, InvalidIndexRangeError, KeyNotExistsError, UnexpectedError } from "./errors";
 
 
 export interface IAccessPlane<K extends Key, I extends Index> {
@@ -63,50 +63,113 @@ export class AccessPlane<K extends Key, I extends Index> {
             throw new InvalidIndexRangeError(index);
         }
 
-        this.keyset.insert(key, index);
-        this.indexset.insert(key, index);
-        this.rankset.increase(index);
+        try {
+            this.keyset.insert(key, index);
+            this.indexset.insert(key, index);
+            this.rankset.increase(index);
+        } catch (error: any) {
+            if (error instanceof FrankError) {
+                throw error;
+            } else {
+                throw new UnexpectedError(error);
+            }
+        }
     }
 
     remove(key: K): void {
-        let index = this.indexset.index(key);
-        if (!index) {
-            throw new KeyNotExistsError(key);
+
+        try {
+            let index = this.indexset.index(key);
+            if (!index) {
+                throw new KeyNotExistsError(key);
+            }
+            this.indexset.remove(key);
+            this.keyset.remove(key, index);
+            this.rankset.decrease(index);
+
+        } catch (error: any) {
+            if (error instanceof FrankError) {
+                throw error;
+            } else {
+                throw new UnexpectedError(error);
+            }
         }
-        this.indexset.remove(key);
-        this.keyset.remove(key, index);
-        this.rankset.decrease(index);
     }
 
     update(key: K, index: I): void {
-        let oldIndex = this.indexset.index(key);
-        if (!oldIndex) {
-            throw new KeyNotExistsError(key);
+        
+        try {
+            let oldIndex = this.indexset.index(key);
+            if (!oldIndex) {
+                throw new KeyNotExistsError(key);
+            }
+            this.indexset.update(key, index);
+            this.keyset.remove(key, oldIndex);
+            this.keyset.insert(key, index);
+            this.rankset.decrease(oldIndex);
+            this.rankset.increase(index);
+        } catch (error: any) {
+            if (error instanceof FrankError) {
+                throw error;
+            } else {
+                throw new UnexpectedError(error);
+            }
         }
-        this.indexset.update(key, index);
-        this.keyset.remove(key, oldIndex);
-        this.keyset.insert(key, index);
-        this.rankset.decrease(oldIndex);
-        this.rankset.increase(index);
     }
 
     keys(index: I): K[] {
-        return this.keyset.keys(index);
+        try {
+            return this.keyset.keys(index);            
+        } catch (error: any) {
+            if (error instanceof FrankError) {
+                throw error;
+            } else {
+                throw new UnexpectedError(error);
+            }
+        }
     }
 
     index(key: K): I {
-        return this.indexset.index(key) || (() => {throw new KeyNotExistsError(key)})();
+        try {
+            let index = this.indexset.index(key);
+            if (!index) {
+                throw new KeyNotExistsError(key);
+            }
+            return index;
+        } catch (error: any) {
+            if (error instanceof FrankError) {
+                throw error;
+            } else {
+                throw new UnexpectedError(error);
+            }
+        }
     }
 
     exists(key: K): boolean {
-        return this.indexset.index(key) !== null;
+        try {
+            return this.indexset.index(key) !== null;
+        } catch (error: any) {
+            if (error instanceof FrankError) {
+                throw error;
+            } else {
+                throw new UnexpectedError(error);
+            }
+        }
     }
 
     rank(key: K): number {
-        let index = this.indexset.index(key);
-        if (!index) {
-            throw new KeyNotExistsError(key);
+        try {
+            let index = this.indexset.index(key);
+            if (!index) {
+                throw new KeyNotExistsError(key);
+            }
+            return this.rankset.rank(index);
+        } catch (error: any) {
+            if (error instanceof FrankError) {
+                throw error;
+            } else {
+                throw new UnexpectedError(error);
+            }
         }
-        return this.rankset.rank(index);
     }
 }

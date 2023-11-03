@@ -1,6 +1,6 @@
 import { Index, Key } from "../model/basic";
 
-class FrankError extends Error {
+export class FrankError extends Error {
     constructor(message: string) {
         super(message);
     }
@@ -39,5 +39,12 @@ export class InvalidIndexRangeError<I extends Index> extends FrankError {
     constructor(index: I) {
         super(`Index: ${index} has invalid range`);
         this.name = "Invalid Index Range Error";
+    }
+}
+
+export class UnexpectedError extends FrankError {
+    constructor(error: Error) {
+        super(`Unexpected Error happened: ${error.message}`);
+        this.name = "Unexpected Error";
     }
 }
