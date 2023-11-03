@@ -2,7 +2,7 @@ import { ColumnSetting, Index, IndexFormat, IndexSetting, Key } from "../model/b
 import IndexSet from "../set/indexset";
 import KeySet from "../set/keyset";
 import RankSet from "../set/rankset";
-import { FrankError, InvalidIndexFormatLengthError, InvalidIndexFormatRangeError, InvalidIndexRangeError, KeyNotExistsError, UnexpectedError } from "./errors";
+import { FrankError, InvalidIndexFormatLengthError, InvalidIndexFormatRangeError, InvalidIndexFormatRangeNotSafeError, InvalidIndexRangeError, KeyNotExistsError, UnexpectedError } from "./errors";
 
 
 export interface IAccessPlane<K extends Key, I extends Index> {
@@ -41,6 +41,10 @@ export class AccessPlane<K extends Key, I extends Index> {
         indexSetting.map(element => {
             if (element.lRange > element.rRange) {
                 throw new InvalidIndexFormatRangeError()
+            }
+
+            if (element.lRange < Number.MIN_SAFE_INTEGER || element.rRange > Number.MAX_SAFE_INTEGER) {
+                throw new InvalidIndexFormatRangeNotSafeError()
             }
         });
 

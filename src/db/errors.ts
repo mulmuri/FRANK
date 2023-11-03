@@ -20,6 +20,13 @@ export class InvalidIndexFormatRangeError extends FrankError {
     }
 }
 
+export class InvalidIndexFormatRangeNotSafeError extends FrankError {
+    constructor() {
+        super("given Index range is not supported in nodejs. supported range is -2^53 ~ 2^53.");
+        this.name = "Invalid Index Format Range Not Safe Error";
+    }
+}
+
 
 export class KeyNotExistsError<K extends Key> extends FrankError {
     constructor(key: K) {
