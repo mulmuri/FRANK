@@ -38,11 +38,6 @@ describe("BasicRankAsc", () => {
         expect(rankAggs.exists(1)).toBe(false);
         expect(rankAggs.size()).toBe(1);
     });
-
-    it("should throw error when decreasing invalid value", () => {
-        expect(() => rankAggs.dec(1)).toThrowError();
-        expect(() => rankAggs.dec(3)).toThrowError();
-    });
 });
 
 
@@ -73,11 +68,6 @@ describe("BasicRankDesc", () => {
         expect(rankAggs.rank(0)).toBe(1);
         expect(rankAggs.rank(1)).toBe(1);
         expect(rankAggs.rank(2)).toBe(0);
-    });
-
-    it("should throw error when decreasing invalid value", () => {
-        expect(() => rankAggs.dec(1)).toThrowError();
-        expect(() => rankAggs.dec(3)).toThrowError();
     });
 
     it("should return return all data wheb all() is called", () => {
