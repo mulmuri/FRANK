@@ -1,5 +1,5 @@
 import { Key, Index, IndexFormat} from "../model/basic";
-import { Session, ISession } from "./session";
+import Session, { ISession } from "./session";
 import { AccessPlane, IAccessPlane } from "../set/accessor";
 import { Mutex } from 'async-mutex';
 

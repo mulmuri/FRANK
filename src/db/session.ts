@@ -14,7 +14,7 @@ export interface ISession<K extends Key, I extends Index> {
 }
 
 
-export class Session<K extends Key, I extends Index> {
+class Session<K extends Key, I extends Index> {
 
     mutex: Mutex;
     accessor: IAccessPlane<K,I>;
@@ -60,3 +60,5 @@ export class Session<K extends Key, I extends Index> {
         });
     }
 }
+
+export default Session;
