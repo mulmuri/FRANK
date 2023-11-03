@@ -79,7 +79,14 @@ class UserRepository {
 
     async getUserRank(conn: Connection, id: string): Promise<[number, boolean]> {
         const [rows] = await conn.query<RankResult[]>(
-            `SELECT RANK() OVER (ORDER BY grade ASC, point DESC, date DESC) AS ranking FROM ${this.table} WHERE id = ?`,
+            `SELECT ranking
+            FROM (
+                SELECT 
+                    id,
+                    RANK() OVER (ORDER BY grade ASC, point DESC, date DESC) as ranking
+                FROM ${this.table}
+            ) AS RankedSubQuery
+            WHERE id = ?;`,
             [id]
         );
         if (rows.length && rows[0].ranking !== undefined) {
