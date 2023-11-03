@@ -10,5 +10,13 @@ describe("race condition problem should be avoided", () => {
         ]
     })
 
-    // TODO: implement this test
+
+    test("verifies pallel query takes in turn", async () => {
+
+        await Promise.all([
+            // TODO: add queries 
+        ])
+
+        // TODO : verify that race condition does not occur
+    })
 });
