@@ -2,6 +2,7 @@ import { ColumnSetting, Index, IndexFormat, IndexSetting, Key } from "../model/b
 import IndexSet from "../set/indexset";
 import KeySet from "../set/keyset";
 import RankSet from "../set/rankset";
+import { InvalidIndexFormatLengthError, InvalidIndexFormatRangeError, InvalidIndexRangeError, KeyNotExistsError } from "./errors";
 
 
 export interface IAccessPlane<K extends Key, I extends Index> {
@@ -22,11 +23,14 @@ export class AccessPlane<K extends Key, I extends Index> {
     indexset: IndexSet<K, I>;
     rankset: RankSet<I>;
 
+    indexFormat: IndexFormat;
+
     constructor(indexFormat: IndexFormat) {
 
         if (indexFormat.length === 0) {
-            throw new Error("IndexFormat should contain at least one element.");
+            throw new InvalidIndexFormatLengthError();
         }
+        this.indexFormat = indexFormat;
 
         let indexSetting: IndexSetting = indexFormat.map<ColumnSetting>(element => ({
             order: element.order,
@@ -34,12 +38,31 @@ export class AccessPlane<K extends Key, I extends Index> {
             rRange: element.max
         })) as IndexSetting;
 
+        indexSetting.map(element => {
+            if (element.lRange > element.rRange) {
+                throw new InvalidIndexFormatRangeError()
+            }
+        });
+
         this.keyset = new KeySet();
         this.indexset = new IndexSet();
         this.rankset = new RankSet(indexSetting);
     }
 
+    private isIndexValid(index: I): boolean {
+        for (let [i, e] of index.entries()) {
+            if (e < this.indexFormat[i].min || e > this.indexFormat[i].max) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     insert(key: K, index: I): void {
+        if (this.isIndexValid(index) === false) {
+            throw new InvalidIndexRangeError(index);
+        }
+
         this.keyset.insert(key, index);
         this.indexset.insert(key, index);
         this.rankset.increase(index);
@@ -48,7 +71,7 @@ export class AccessPlane<K extends Key, I extends Index> {
     remove(key: K): void {
         let index = this.indexset.index(key);
         if (!index) {
-            throw new Error("Key does not exist.");
+            throw new KeyNotExistsError(key);
         }
         this.indexset.remove(key);
         this.keyset.remove(key, index);
@@ -58,7 +81,7 @@ export class AccessPlane<K extends Key, I extends Index> {
     update(key: K, index: I): void {
         let oldIndex = this.indexset.index(key);
         if (!oldIndex) {
-            throw new Error("Key does not exist.");
+            throw new KeyNotExistsError(key);
         }
         this.indexset.update(key, index);
         this.keyset.remove(key, oldIndex);
@@ -72,7 +95,7 @@ export class AccessPlane<K extends Key, I extends Index> {
     }
 
     index(key: K): I {
-        return this.indexset.index(key) || (() => {throw new Error("Key does not exist.")})();
+        return this.indexset.index(key) || (() => {throw new KeyNotExistsError(key)})();
     }
 
     exists(key: K): boolean {
@@ -82,7 +105,7 @@ export class AccessPlane<K extends Key, I extends Index> {
     rank(key: K): number {
         let index = this.indexset.index(key);
         if (!index) {
-            throw new Error("Key does not exist.");
+            throw new KeyNotExistsError(key);
         }
         return this.rankset.rank(index);
     }
