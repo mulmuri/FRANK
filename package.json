@@ -1,6 +1,6 @@
 {
   "name": "frankdb",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "An extreamly fast RANK() database",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -18,7 +18,11 @@
     "type": "git",
     "url": "git+https://github.com/mulmuri/frank.git"
   },
-  "keywords": ["db", "database", "rank"],
+  "keywords": [
+    "db",
+    "database",
+    "rank"
+  ],
   "author": "mulmuri <darkblue31415@gmail.com>",
   "license": "MIT",
   "homepage": "https://github.com/mulmuri/frank",
