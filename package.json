@@ -1,15 +1,21 @@
 {
-  "name": "franks",
-  "version": "1.0.0",
-  "description": "A Fest RANK Server impl. by nodejs",
+  "name": "frankdb",
+  "version": "1.0.2",
+  "description": "An extreamly fast RANK() database",
   "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
-    "test": "NODE_OPTIONS=\"--max-old-space-size=4096\" jest",
+    "test": "jest",
+    "benchmark": "NODE_OPTIONS=\"--max-old-space-size=4096\" jest test/benchmark/main.test.ts",
     "build": "tsc",
     "prepublishOnly": "npm run build"
   },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "keywords": [],
-  "author": "",
+  "author": "mulmuri",
   "license": "ISC",
   "devDependencies": {
     "@babel/preset-typescript": "^7.23.0",
