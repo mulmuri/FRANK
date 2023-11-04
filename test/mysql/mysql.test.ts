@@ -71,11 +71,7 @@ describe("MySQL", () => {
             await conn.commit();
         } catch (e: any) {
             await conn.rollback();
-            if (isErrorFromJest(e)) {
-                throw e;
-            } else {
-                expect(e).toBe(null);
-            }
+            throw e;
 
         } finally {
             conn.release();
@@ -92,11 +88,7 @@ describe("MySQL", () => {
 
         } catch (e: any) {
             await conn.rollback();
-            if (isErrorFromJest(e)) {
-                throw e;
-            } else {
-                expect(e).toBe(null);
-            }
+            throw e;
 
         } finally {
             conn.release();
@@ -113,12 +105,7 @@ describe("MySQL", () => {
 
         } catch (e: any) {
             await conn.rollback();
-            if (isErrorFromJest(e)) {
-                throw e;
-            } else {
-                expect(e).toBe(null);
-            }
-
+            throw e;
 
         } finally {
             conn.release();
@@ -135,11 +122,7 @@ describe("MySQL", () => {
 
         } catch (e: any) {
             await conn.rollback();
-            if (isErrorFromJest(e)) {
-                throw e;
-            } else {
-                expect(e).toBe(null);
-            }
+            throw e;
 
         } finally {
             conn.release();
@@ -160,11 +143,7 @@ describe("MySQL", () => {
 
         } catch (e: any) {
             await conn.rollback();
-            if (isErrorFromJest(e)) {
-                throw e;
-            } else {
-                expect(e).toBe(null);
-            }
+            throw e;
 
         } finally {
             conn.release();
@@ -183,11 +162,7 @@ describe("MySQL", () => {
 
         } catch (e: any) {
             await conn.rollback();
-            if (isErrorFromJest(e)) {
-                throw e;
-            } else {
-                expect(e).toBe(null);
-            }
+            throw e;
 
         } finally {
             conn.release();
@@ -205,11 +180,7 @@ describe("MySQL", () => {
             await conn.commit();
         } catch (e: any) {
             await conn.rollback();
-            if (isErrorFromJest(e)) {
-                throw e;
-            } else {
-                expect(e).toBe(null);
-            }
+            throw e;
 
         } finally {
             conn.release();
@@ -225,11 +196,7 @@ describe("MySQL", () => {
             await conn.commit();
         } catch (e: any) {
             await conn.rollback();
-            if (isErrorFromJest(e)) {
-                throw e;
-            } else {
-                expect(e).toBe(null);
-            }
+            throw e;
 
         } finally {
             conn.release();

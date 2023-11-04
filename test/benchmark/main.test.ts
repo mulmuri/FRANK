@@ -25,9 +25,11 @@ beforeAll(async () => {
         await A.userRepository.setupUserRepository(conn);
         await B.userRepository.setupUserRepository(conn);
         await conn.commit();
+
     } catch (e) {
         await conn.rollback();
-        expect(e).toBe(null);
+        throw e;
+
     } finally {
         conn.release();
     }
@@ -42,9 +44,11 @@ afterAll(async () => {
         await A.userRepository.teardownUserRepository(conn);
         await B.userRepository.teardownUserRepository(conn);
         await conn.commit();
+
     } catch (e) {
         await conn.rollback();
-        expect(e).toBe(null);
+        throw e;
+
     } finally {
         conn.release();
     }
@@ -103,9 +107,11 @@ describe("A: insert query", () => {
                 await A.userRepository.insertUserMany(conn, A.userList.slice(i * batchsz, (i + 1) * batchsz));
             }
             await conn.commit();
+
         } catch (e) {
             await conn.rollback();
-            expect(e).toBe(null);
+            throw e;
+
         } finally {
             conn.release();
         }
@@ -144,7 +150,8 @@ describe("B: insert query", () => {
 
         } catch (e) {
             await conn.rollback();
-            expect(e).toBe(null);
+            throw e;
+
         } finally {
             conn.release();
         }
@@ -168,7 +175,8 @@ describe("A: rank query", () => {
                 await conn.commit();
             } catch (e) {
                 await conn.rollback();
-                expect(e).toBe(null);
+                throw e;
+
             } finally {
                 conn.release();
             }
@@ -255,7 +263,7 @@ describe("A: update query", () => {
     
             } catch (e) {
                 await conn.rollback();
-                expect(e).toBe(null);
+                throw e;
     
             } finally {
                 conn.release();
@@ -330,7 +338,7 @@ describe("B: update query", () => {
     
             } catch (e) {
                 await conn.rollback();
-                expect(e).toBe(null);
+                throw e;
     
             } finally {
                 conn.release();
