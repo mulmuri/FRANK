@@ -1,2 +1,2 @@
 import FRANK from './db/init';
-export { FRANK }
+export default FRANK;

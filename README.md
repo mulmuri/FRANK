@@ -1,4 +1,6 @@
-# 오픈소스 소개
+[![NPM version](https://badge.fury.io/js/frankdb.svg)](https://badge.fury.io/js/frankdb)
+
+
 
 ## FRANK 를 소개합니다!
 
@@ -35,7 +37,7 @@ FRANK 는 key-value store 구조를 가지고 있습니다. 아래와 같이 key
 - nodejs 의 실수 오차 문제로 인해 -2^53 ~ 2^53 의 범위에서만 선언할 수 있습니다.
 
 ```tsx
-import FRANK from "frank";
+import FRANK from "frankdb";
 
 const DB = FRANK({
     keyType: 'any',
@@ -67,11 +69,12 @@ await session.exists('dog'); // false
 ```
 
 
+
 ## 어떠한 기능이 개발될 예정인가요?
 
-현재 FRANK 는 nodejs 패키지로 작성되어 nodejs 에서만  npm 을 통해 모듈을 설치하여 사용할 수 있습니다.
+현재 FRANK 는 nodejs 패키지로 작성되어 nodejs 에서만 npm 을 통해 모듈을 설치하여 사용할 수 있습니다.
 
-만약 이 데이터베이스가 유용하고 redis 및 다른 데이터베이스와 같은 범언어 오픈소스로 작성될 필요가 있다고 생각하신다면 Star 을 눌러주세요!
+만약 이 데이터베이스가 유용하고 redis 및 다른 데이터베이스와 같은 범언어 오픈소스로 작성될 필요가 있다고 생각하신다면 ⭐️ 을 눌러주세요!
 
 
 
