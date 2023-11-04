@@ -1,14 +1,14 @@
 # 오픈소스 소개
 
-### FRANK 를 소개합니다!
+## FRANK 를 소개합니다!
 
 FRANK 는 RANK() 함수를 매우 빠르게 제공하는 데이터베이스입니다. 스택 오버플로우 등을 서베이하면 기존의 RDBMS 에서 RANK() 함수가 느린데, 어떻게 최적화 하냐는 글을 볼 수 있습니다. 사실 RANK() 함수는 전체 레코드를 정렬하여 하나씩 세아려야 하는 매우 무거운 함수로, 이 쿼리를 최적화 하는 데에는 한계가 있습니다. FRANK는 다른 데이터베이스와 함께 사용하여 RANK 의 성능을 극대화하고자 할 때 사용할 수 있습니다.
 
-기존 RDBMS 에서 RANK() 함수의 시간복잡도는 O(nlogn) 입니다. FRANK 는 기존 rdbms 에서 사용하는 B+Tree 이외에도 Dynamic Segment Tree 를 사용하여 RANK() 함수를 O(log(range(n))) 에 제공합니다. 10만개의 record 기준으로 RDBMS 에서는 100 번의 RANK() 함수를 호출하는데 54000ms 가 걸리지만, FRANK 는 단 100ms 에 모든 쿼리를 처리할 수 있습니다. record 가 늘어날수록 격차는 더 커집니다.
+기존 RDBMS 에서 RANK() 함수의 시간복잡도는 O(nlogn) 입니다. FRANK 는 기존 rdbms 에서 사용하는 B+Tree 이외에도 Dynamic Segment Tree 를 사용하여 RANK() 함수를 O(log(range(n))) 에 제공합니다. 이는 10만개의 record 기준으로 RDBMS 에서는 100 번의 RANK() 함수를 호출하는데 약 15000ms 가 걸리지만, FRANK 는 단 10ms 에 모든 쿼리를 처리할 수 있습니다. record 가 늘어날수록 격차는 더 커집니다.
 
 
 
-### 언제 사용할 수 있나요?
+## 언제 사용할 수 있나요?
 
 1. 레코드의 수가 매우 클 때 사용할 수 있습니다.
 
@@ -20,7 +20,7 @@ FRANK 를 사용하지 않는 경우에도 실시간을 포기하고 RANK() 결�
 
 
 
-### 어떻게 사용하나요?
+## 어떻게 사용하나요?
 
 아래와 같이 설치해주세요
 
@@ -67,7 +67,7 @@ await session.exists('dog'); // false
 ```
 
 
-### 어떠한 기능이 개발될 예정인가요?
+## 어떠한 기능이 개발될 예정인가요?
 
 현재 FRANK 는 nodejs 패키지로 작성되어 nodejs 에서만  npm 을 통해 모듈을 설치하여 사용할 수 있습니다.
 
@@ -75,7 +75,7 @@ await session.exists('dog'); // false
 
 
 
-### 벤치마크 테스트 내용
+## 벤치마크 테스트 내용
 
 아래와 같이 벤치마크 테스트를 진행하였습니다. 
 
@@ -149,17 +149,17 @@ WHERE id = ?;
 | 10,000 | A | B |
 | --- | --- | --- |
 | insert | 148 ms | 213 ms |
-| update | 62 ms | 61 ms |
 | rank | 1341 ms | 7 ms |
+| update | 62 ms | 61 ms |
 
 | 100,000 | A | B |
 | --- | --- | --- |
 | insert | 976 ms | 1924 ms |
-| update | 58 ms | 56 ms |
 | rank | 15833 ms | 10 ms |
+| update | 58 ms | 56 ms |
 
 | 1,000,000 | A | B |
 | --- | --- | --- |
 | insert | 12592 ms | 37818 ms |
-| update | 180 ms | 339 ms |
 | rank | 385089 ms | 24 ms |
+| update | 180 ms | 339 ms |
