@@ -86,7 +86,7 @@ await session.exists('dog'); // false
 
 - SEED : 1234
 - Database : MySQL
-- CPU : Apple M1
+- CPU : Apple M1 8Core
 - Network : localhost
 
 
